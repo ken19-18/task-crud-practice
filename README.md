@@ -1,119 +1,58 @@
-# API開発スターターキット (Tutorial 13)
+# task-crud-practice
 
-このリポジトリは、API開発カリキュラム（Tutorial 13）のハンズオンで使用するスターターキットです。
-Laravel 10.x と Laravel Sail (Docker) を使用した開発環境が構築されています。
+## 概要
 
-## ✅ 前提条件
+COACHTECH 教材 Tutorial 11-2「タスク管理APIのCRUD実装」で作成した成果物です。
+タスク管理APIのCRUD操作を実装しました。
 
-* **Docker Desktop** がインストールされ、起動していること。
-* **Git** がインストールされていること。
+## 使用技術
 
-## 🚀 環境構築手順
+- PHP 8.x
+- Laravel 10.x
+- REST API（CRUD）
+- API Resources
+- Laravel Sail
+- Postman
 
-ターミナル（Windowsの場合はWSL2またはGit Bash推奨）を開き、以下の手順で環境を構築してください。
+## 実装するAPI:
 
-### 1. リポジトリのクローン
-まずはプロジェクトをローカルにダウンロードします。
+HTTPメソッド URL 操作 ステータスコード
 
-```bash
-git clone https://github.com/coachtech-material/laravel-api-starter-forTutorial13.git
-cd laravel-api-starter-forTutorial13
-```
+- GET /api/tasks 一覧取得 200
+- POST /api/tasks 作成 201 / 422
+- GET /api/tasks/{id} 詳細取得 200 / 404
+- PUT /api/tasks/{id} 更新 200 / 404 / 422
+- DELETE /api/tasks/{id} 削除 204 / 404
 
-### 2. 依存パッケージのインストール
+## 実装内容
 
-Dockerを使用してComposerパッケージをインストールします。ローカルにPHPやComposerがなくても実行可能です。
+- APIリソースコントローラーによるCRUD処理
+- `Route::apiResource()` によるルーティング設定
+- Eloquent ORMを使用したデータベース操作
+- `$request->validate()` によるバリデーション
+- JSON形式でのレスポンス返却
+- HTTPステータスコードによる処理結果の通知
+- 存在しないタスクに対する404エラー処理
 
-**Mac / Linux の場合:**
+## 動作確認
 
-```bash
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php82-composer:latest \
-    composer install --ignore-platform-reqs
-```
+Postmanを使用して、各APIエンドポイントにリクエストを送信し、正常系・異常系の動作を確認しました。
 
-**Windows (PowerShell) の場合:**
+- GET：タスク一覧・詳細の取得（200）
+- POST：タスクの新規作成（201）
+- PUT：タスクの更新（200）
+- DELETE：タスクの削除（204）
+- バリデーションエラー時の422レスポンス
+- 存在しないタスクを指定した場合の404レスポンス
 
-```powershell
-docker run --rm `
-    -v "${PWD}:/var/www/html" `
-    -w /var/www/html `
-    laravelsail/php82-composer:latest `
-    composer install --ignore-platform-reqs
-```
+各リクエストに対するJSONレスポンスとHTTPステータスコードを確認しました。
 
-### 3. 環境設定ファイルの作成
+## 学習したこと
 
-`.env.example` をコピーして `.env` ファイルを作成します。
-
-```bash
-cp .env.example .env
-```
-
-### 4. Docker環境の起動 (Laravel Sail)
-
-コンテナを起動します。初回はイメージのビルドに数分かかる場合があります。
-
-```bash
-./vendor/bin/sail up -d
-```
-
-### 5. アプリケーションキーの生成
-
-Laravelの暗号化キーを生成します。
-
-```bash
-./vendor/bin/sail artisan key:generate
-```
-
-### 6. データベースの準備 (マイグレーション & シーダー)
-
-テーブルを作成し、テストデータを投入します。
-
-```bash
-./vendor/bin/sail artisan migrate:fresh --seed
-```
-
-### 7. 動作確認
-
-ブラウザで以下のURLにアクセスしてください。LaravelのWelcomeページが表示されれば構築完了です。
-
-* URL: http://localhost
-
----
-
-## 📝 開発のヒント
-
-### テストユーザーについて
-
-シーダー (`UserSeeder`) により、以下のテストユーザーが自動的に作成されています。認証機能は実装されていませんが、タスクの所有者 (`user_id`) としてこのIDを使用します。
-
-* **User ID**: `1`
-* **Name**: `Test User`
-* **Email**: `test@example.com`
-
-### サンプルタスクについて
-
-シーダー (`TaskSeeder`) により、テストユーザー（ID: 1）に紐づくサンプルタスクが5件作成されています。
-
-### 開発フロー
-
-Tutorial 13のハンズオンでは、主に以下のファイルを編集・作成します。
-
-1. **ルーティング**: `routes/api.php`
-2. **コントローラー**: `app/Http/Controllers/Api/` (新規作成)
-3. **APIリソース**: `app/Http/Resources/` (新規作成)
-
-### よく使うコマンド
-
-* **コンテナの起動**: `./vendor/bin/sail up -d`
-* **コンテナの停止**: `./vendor/bin/sail down`
-* **Artisanコマンド**: `./vendor/bin/sail artisan ...`
-* **ログの確認**: `./vendor/bin/sail logs -f`
-
-### APIテストツール
-
-本カリキュラムでは、VSCode拡張機能の **Thunder Client** を使用して動作確認を行います。
+- RESTful APIの基本的な設計
+- CRUDとHTTPメソッドの関係
+- LaravelでのAPIルーティング
+- コントローラーでのリクエスト処理
+- バリデーションによる入力値の検証
+- 正常系・異常系を考慮したAPIの実装
+- Postmanを使用したAPIの動作確認
